@@ -77,7 +77,7 @@ foreach my $line (split("\n",$story)) {
       # @+ is an array containing subgroup ending (used as $+[$m])
       # substr gets $line, offset and length (calculated by end minus beginning)
       my @subgroups;
-      for (my $m=1;$m<=$#+;$m++) {
+      foreach my $m ( 1 .. $#+ ) {
         push @subgroups, substr($line,$-[$m],$+[$m]-$-[$m])
       }
       $matchers{$key}->(@subgroups);
