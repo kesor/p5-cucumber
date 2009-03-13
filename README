@@ -1,0 +1,36 @@
+
+This is a minimal implementation of Cucumber in Perl5
+
+To learn about Cucumber take a look at http://wiki.github.com/aslakhellesoy/cucumber/
+
+
+Example of Perl5 usage:
+
+= Story
+Feature: Dealing with mushrooms
+  In order to know the effect of evil poisonous mushrooms
+  We will test the effects of eating mushrooms on little children
+
+  Scenario: Mushrooms are bad for you, they kill boys
+    Given a live boy
+    When he ate a mushroom
+    Then he was a dead boy
+
+  Scenario: Mushrooms are bad for girls too
+    Given a live girl
+    When she ate a mushroom
+    Then she was a dead girl
+
+= Code
+sm('Given a (.*)',sub {
+  my @params = shift;
+  $state{human} = $params[0];
+});
+sm('When s?he ate a mushroom',sub {
+  $state{human} =~ s/live/dead/;
+});
+sm('Then s?he was a (.*)',sub {
+  my @params = shift;
+  is($state{human},$params[0]);
+});
+
