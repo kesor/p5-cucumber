@@ -3,7 +3,7 @@
 =cut
 use warnings;
 use strict;
-use Test::More tests => 2;
+use Test::More 'no_plan';
 
 # utility func to trim whitespace from beginning/end of strings
 sub trim {
