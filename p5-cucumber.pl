@@ -33,7 +33,7 @@ EOF
 # anonymous functions created by Given/When/Then
 my %matchers;
 
-# creator of matchers, commonly knows as StoreMatcher
+# creator of matchers, commonly known as StoreMatcher
 # but abbreviated into just 'sm'
 sub sm {
   my $match_string = shift;
@@ -41,18 +41,24 @@ sub sm {
   $matchers{$match_string} = $anony_func;
 }
 
+#
+# hash to store variables that need to remember
+# their state across the Given/When/Then scenarios
+#
 my %state;
-# creating the code behind the story
+#
+# the code behind the story
+#
 sm('Given a (.*)',sub {
   my @params = shift;
-  $state{boy} = $params[0];
+  $state{human} = $params[0];
 });
 sm('When s?he ate a mushroom',sub {
-  $state{boy} =~ s/live/dead/;
+  $state{human} =~ s/live/dead/;
 });
 sm('Then s?he was a (.*)',sub {
   my @params = shift;
-  is($state{boy},$params[0]);
+  is($state{human},$params[0]);
 });
 
 #
