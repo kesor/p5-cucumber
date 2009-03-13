@@ -18,6 +18,7 @@ Feature: Dealing with mushrooms
 
   Scenario: Mushrooms are bad for you, they kill boys
     Given a live boy
+    And a live girl
     When he ate a mushroom
     Then he was a dead boy
 
@@ -49,28 +50,40 @@ my %state;
 #
 # the code behind the story
 #
-sm('Given a (.*)',sub {
+sm(qr/Given a (.*)/,sub {
   my @params = shift;
   $state{human} = $params[0];
 });
-sm('When s?he ate a mushroom',sub {
+sm(qr/When s?he ate a mushroom/,sub {
   $state{human} =~ s/live/dead/;
 });
-sm('Then s?he was a (.*)',sub {
+sm(qr/Then s?he was a (.*)/,sub {
   my @params = shift;
-  is($state{human},$params[0]);
+  print '- ';
+  is($state{human},$params[0],$params[0]);
 });
 
 #
 # THE engine!
 #
+my $last_first_word;
 foreach my $line (split("\n",$story)) {
   print $line, " ";
   $line = trim($line);
 
+  # Handle the case for "And":
+  # first, remember 'Given' or 'When' or 'Then'
+  # then later, replace 'And' when it shows up
+  if ($line =~ /^(Given|When|Then)\W+/) {
+    $last_first_word = $1;
+  }
+  if ($line =~ /^And/) {
+    $line =~ s/^And(\W+)/$last_first_word$1/;
+  }
+
   # tries to match current line with any of the previously stored matchers
   foreach my $key (keys %matchers) {
-    if ($line =~ /$key/) {
+    if ($line =~ $key) {
       # create an array that includes all matches of /$key/ against $line
       # $#+ is the number of matches in the last regexp
       # @- is an array containing subgroup beginnings (used as $-[$m])
