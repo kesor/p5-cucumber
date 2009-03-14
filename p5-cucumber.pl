@@ -35,9 +35,24 @@ my %matchers;
 
 # creator of matchers, commonly known as StoreMatcher
 # but abbreviated into just 'sm'
-sub sm(&$) {
-  my ($callback, $regexp) = @_;
+sub sm($&) {
+  my ($regexp, $callback) = @_;
   $matchers{$regexp} = $callback;
+}
+sub Given($&) {
+  my ($regexp, $callback) = @_;
+  $regexp = qr{Given $regexp};
+  sm($regexp,\&$callback);
+}
+sub When($&) {
+  my ($regexp, $callback) = @_;
+  $regexp = qr{When $regexp};
+  sm($regexp,\&$callback);
+}
+sub Then($&) {
+  my ($regexp, $callback) = @_;
+  $regexp = qr{Then $regexp};
+  sm($regexp,\&$callback);
 }
 
 #
@@ -48,21 +63,21 @@ my %state;
 #
 # the code behind the story
 #
-sm {
+Given qr/a (.*) in a (.*)/, sub {
   my ($description,$location) = @_;
   $state{human} = $description;
   $state{location} = $location;
-} qr/Given a (.*) in a (.*)/;
+};
 
-sm {
+When qr/s?he ate a mushroom/, sub {
   $state{human} =~ s/live/dead/;
-} qr/When s?he ate a mushroom/;
+};
 
-sm {
+Then qr/s?he was a (.*) in a (.*)/, sub {
   my ($description,$location) = @_;
   is($state{human},$description,$description);
   is($state{location},$location,$location);
-} qr/Then s?he was a (.*) in a (.*)/;
+};
 
 #
 # THE engine!
