@@ -9,6 +9,7 @@ To learn about Cucumber take a look at http://wiki.github.com/aslakhellesoy/cucu
 h2. Example:
 
 h3. Story
+
 <pre>
 Feature: Dealing with mushrooms
   In order to know the effect of evil poisonous mushrooms
@@ -26,6 +27,7 @@ Feature: Dealing with mushrooms
 </pre>
 
 h3. Code
+
 <code>
 Given qr/(.*) in (.*)/, sub {
   my ($description,$location) = @_;
@@ -48,6 +50,7 @@ Then qr/s?he was (.*) in (.*)/, sub {
 </code>
 
 h3. Execution output
+
 <pre>
 $ perl p5-cucumber.pl
 Feature: Dealing with mushrooms
@@ -76,8 +79,8 @@ not ok 4 - the sea
 </pre>
 (exit code is 1 for failure)
 
+<p>And when we fix the story:</p>
 
-And when we fix the story:
 <pre>
 $ perl p5-cucumber.pl
 Feature: Dealing with mushrooms
