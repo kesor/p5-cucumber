@@ -3,7 +3,8 @@ h1. Perl 5 Cucumber
 
 This is a minimal implementation of Cucumber in Perl5
 
-To learn about Cucumber take a look at http://wiki.github.com/aslakhellesoy/cucumber/
+To learn about Cucumber take a look at:
+<a href="http://wiki.github.com/aslakhellesoy/cucumber/">http://wiki.gihub.com/aslakhellesoy/cucumber</a>
 
 
 h2. Example:
