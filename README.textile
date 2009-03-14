@@ -1,13 +1,15 @@
 
+h1. Perl 5 Cucumber
+
 This is a minimal implementation of Cucumber in Perl5
 
 To learn about Cucumber take a look at http://wiki.github.com/aslakhellesoy/cucumber/
 
 
-Example of Perl5 usage:
+h2. Example:
 
-= Story
-
+h3. Story
+<pre>
 Feature: Dealing with mushrooms
   In order to know the effect of evil poisonous mushrooms
   We will test the effects of eating mushrooms on little children
@@ -21,29 +23,32 @@ Feature: Dealing with mushrooms
     Given a live girl in a forest
     When she ate a mushroom
     Then she was a dead girl in a forest
+</pre>
 
-
-= Code
-
-Given qr/a (.*) in a (.*)/, sub {
+h3. Code
+<code>
+Given qr/(.*) in (.*)/, sub {
   my ($description,$location) = @_;
   $state{human} = $description;
   $state{location} = $location;
 };
 
-When qr/s?he ate a mushroom/, sub {
-  $state{human} =~ s/live/dead/;
+When qr/s?he ate (.*)/, sub {
+  my $item = shift;
+  if ($item eq 'a mushroom') {
+    $state{human} =~ s/live/dead/;
+  }
 };
 
-Then qr/s?he was a (.*) in a (.*)/, sub {
+Then qr/s?he was (.*) in (.*)/, sub {
   my ($description,$location) = @_;
   is($state{human},$description,$description);
   is($state{location},$location,$location);
 };
+</code>
 
-
-= Execution output
-
+h3. Execution output
+<pre>
 $ perl p5-cucumber.pl
 Feature: Dealing with mushrooms
   In order to know the effect of evil poisonous mushrooms
@@ -68,12 +73,12 @@ not ok 4 - the sea
 #     expected: 'the sea'
 1..4
 # Looks like you failed 1 test of 4.
-
+</pre>
 (exit code is 1 for failure)
 
 
 And when we fix the story:
-
+<pre>
 $ perl p5-cucumber.pl
 Feature: Dealing with mushrooms
   In order to know the effect of evil poisonous mushrooms
@@ -93,10 +98,10 @@ ok 2 - a forest
 ok 3 - a dead girl
 ok 4 - a forest
 1..4
-
+</pre>
 (exit code is 0 for failure)
 
-= Thanks
+h3. Thanks
 
 Great thank you for the perl-il and perl-qa mailing lists
 for helping me with some high level perl concepts that make
