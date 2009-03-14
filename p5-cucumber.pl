@@ -17,15 +17,14 @@ Feature: Dealing with mushrooms
   We will test the effects of eating mushrooms on little children
 
   Scenario: Mushrooms are bad for you, they kill boys
-    Given a live boy
-    And a live girl
+    Given a live boy in a forest
     When he ate a mushroom
-    Then he was a dead boy
+    Then he was a dead boy in a forest
 
   Scenario: Mushrooms are bad for girls too
-    Given a live girl
+    Given a live girl in a forest
     When she ate a mushroom
-    Then she was a dead girl
+    Then she was a dead girl in a forest
 
 EOF
 ;
@@ -50,17 +49,20 @@ my %state;
 #
 # the code behind the story
 #
-sm(qr/Given a (.*)/,sub {
-  my @params = shift;
-  $state{human} = $params[0];
+sm(qr/Given a (.*) in a (.*)/,sub {
+  my $description = shift;
+  my $location = shift;
+  $state{human} = $description;
+  $state{location} = $location;
 });
 sm(qr/When s?he ate a mushroom/,sub {
   $state{human} =~ s/live/dead/;
 });
-sm(qr/Then s?he was a (.*)/,sub {
-  my @params = shift;
-  print '- ';
-  is($state{human},$params[0],$params[0]);
+sm(qr/Then s?he was a (.*) in a (.*)/,sub {
+  my $description = shift;
+  my $location = shift;
+  is($state{human},$description,$description);
+  is($state{location},$location,$location);
 });
 
 #
@@ -68,7 +70,7 @@ sm(qr/Then s?he was a (.*)/,sub {
 #
 my $last_first_word;
 foreach my $line (split("\n",$story)) {
-  print $line, " ";
+  print $line, "\n";
   $line = trim($line);
 
   # Handle the case for "And":
@@ -89,6 +91,4 @@ foreach my $line (split("\n",$story)) {
       last;
     }
   }
-
-  print "\n";
 }
