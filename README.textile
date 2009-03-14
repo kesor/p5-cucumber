@@ -109,7 +109,8 @@ ok 4 - a forest
 
 h3. Thanks
 
+<p>
 Great thank you for the perl-il and perl-qa mailing lists
 for helping me with some high level perl concepts that make
-this code too so beautiful like it is.
-
+this code so beautiful like it is.
+</p>
