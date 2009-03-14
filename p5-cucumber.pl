@@ -63,17 +63,20 @@ my %state;
 #
 # the code behind the story
 #
-Given qr/a (.*) in a (.*)/, sub {
+Given qr/(.*) in (.*)/, sub {
   my ($description,$location) = @_;
   $state{human} = $description;
   $state{location} = $location;
 };
 
-When qr/s?he ate a mushroom/, sub {
-  $state{human} =~ s/live/dead/;
+When qr/s?he ate (.*)/, sub {
+  my $item = shift;
+  if ($item eq 'a mushroom') {
+    $state{human} =~ s/live/dead/;
+  }
 };
 
-Then qr/s?he was a (.*) in a (.*)/, sub {
+Then qr/s?he was (.*) in (.*)/, sub {
   my ($description,$location) = @_;
   is($state{human},$description,$description);
   is($state{location},$location,$location);
