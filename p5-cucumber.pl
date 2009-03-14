@@ -35,10 +35,9 @@ my %matchers;
 
 # creator of matchers, commonly known as StoreMatcher
 # but abbreviated into just 'sm'
-sub sm {
-  my $match_string = shift;
-  my $anony_func = shift;
-  $matchers{$match_string} = $anony_func;
+sub sm(&$) {
+  my ($callback, $regexp) = @_;
+  $matchers{$regexp} = $callback;
 }
 
 #
@@ -49,19 +48,21 @@ my %state;
 #
 # the code behind the story
 #
-sm(qr/Given a (.*) in a (.*)/,sub {
+sm {
   my ($description,$location) = @_;
   $state{human} = $description;
   $state{location} = $location;
-});
-sm(qr/When s?he ate a mushroom/,sub {
+} qr/Given a (.*) in a (.*)/;
+
+sm {
   $state{human} =~ s/live/dead/;
-});
-sm(qr/Then s?he was a (.*) in a (.*)/,sub {
+} qr/When s?he ate a mushroom/;
+
+sm {
   my ($description,$location) = @_;
   is($state{human},$description,$description);
   is($state{location},$location,$location);
-});
+} qr/Then s?he was a (.*) in a (.*)/;
 
 #
 # THE engine!
