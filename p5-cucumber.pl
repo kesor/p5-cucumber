@@ -50,8 +50,7 @@ my %state;
 # the code behind the story
 #
 sm(qr/Given a (.*) in a (.*)/,sub {
-  my $description = shift;
-  my $location = shift;
+  my ($description,$location) = @_;
   $state{human} = $description;
   $state{location} = $location;
 });
@@ -59,8 +58,7 @@ sm(qr/When s?he ate a mushroom/,sub {
   $state{human} =~ s/live/dead/;
 });
 sm(qr/Then s?he was a (.*) in a (.*)/,sub {
-  my $description = shift;
-  my $location = shift;
+  my ($description,$location) = @_;
   is($state{human},$description,$description);
   is($state{location},$location,$location);
 });
