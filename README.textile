@@ -105,7 +105,7 @@ ok 3 - a dead girl
 ok 4 - a forest
 1..4
 </pre>
-(exitcode is 0 for failure)
+(exitcode is 0 for success)
 
 h3. Thanks
 
