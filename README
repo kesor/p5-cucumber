@@ -42,6 +42,29 @@ Then qr/s?he was a (.*) in a (.*)/, sub {
 };
 
 
+= Execution output
+
+$ perl p5-cucumber.pl
+Feature: Dealing with mushrooms
+  In order to know the effect of evil poisonous mushrooms
+  We will test the effects of eating mushrooms on little children
+
+  Scenario: Mushrooms are bad for you, they kill boys
+    Given a live boy in a forest
+    When he ate a mushroom
+    Then he was a dead boy in a forest
+ok 1 - dead boy
+ok 2 - forest
+
+  Scenario: Mushrooms are bad for girls too
+    Given a live girl in a forest
+    When she ate a mushroom
+    Then she was a dead girl in a forest
+ok 3 - dead girl
+ok 4 - forest
+1..4
+
+
 = Thanks
 
 Great thank you for the perl-il and perl-qa mailing lists
