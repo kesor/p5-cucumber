@@ -13,8 +13,9 @@ sub trim {
 
 my $story = <<EOF
 Feature: Dealing with mushrooms
-  In order to know the effect of evil poisonous mushrooms
-  We will test the effects of eating mushrooms on little children
+  In order to test the effect of evil poisonous mushrooms
+  As an evil scientist
+  I want to test effects of eating mushrooms on little children
 
   Scenario: Mushrooms are bad for you, they kill boys
     Given a live boy in a forest
