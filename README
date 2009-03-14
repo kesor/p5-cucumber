@@ -38,3 +38,13 @@ sm {
   is($state{human},$description,$description);
   is($state{location},$location,$location);
 } qr/Then s?he was a (.*) in a (.*)/;
+
+
+
+
+
+= Thanks
+Great thank you for the perl-il and perl-qa mailing lists
+for helping me with some high level perl concept that make
+this code too so beautiful like it does.
+
