@@ -90,6 +90,7 @@ foreach my $line (split("\n",$story)) {
       while (my ($key, $cb) = each(%matchers)) {
         if (my @subgroups = ($line =~ $key)) {
           $cb->(@subgroups);
+          last;
         }
       }
     }
