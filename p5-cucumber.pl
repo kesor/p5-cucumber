@@ -81,19 +81,14 @@ foreach my $line (split("\n",$story)) {
     $line =~ s/^And(\W+)/$last_first_word$1/;
   }
 
-  # tries to match current line with any of the previously stored matchers
-  foreach my $key (keys %matchers) {
-    if ($line =~ $key) {
-
-      # match regexps in %matchers against subgroups
-      # and call the callback function
-      while (my ($key, $cb) = each(%matchers)) {
-        if (my @subgroups = ($line =~ $key)) {
-          $cb->(@subgroups);
-          last;
-        }
-      }
+  # match regexps in %matchers against subgroups
+  # and call the callback function
+  foreach my $regexp (keys %matchers) {
+    if (my @subgroups = ($line =~ $regexp)) {
+      $matchers{$regexp}->(@subgroups);
+      last;
     }
   }
+
   print "\n";
 }
