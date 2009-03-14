@@ -73,10 +73,10 @@ foreach my $line (split("\n",$story)) {
 
   # Handle the case for "And":
   # first, remember 'Given' or 'When' or 'Then'
-  # then later, replace 'And' when it shows up
   if ($line =~ /^(Given|When|Then)\W+/) {
     $last_first_word = $1;
   }
+  # then later, replace 'And' when it shows up
   if ($line =~ /^And/) {
     $line =~ s/^And(\W+)/$last_first_word$1/;
   }
@@ -84,16 +84,14 @@ foreach my $line (split("\n",$story)) {
   # tries to match current line with any of the previously stored matchers
   foreach my $key (keys %matchers) {
     if ($line =~ $key) {
-      # create an array that includes all matches of /$key/ against $line
-      # $#+ is the number of matches in the last regexp
-      # @- is an array containing subgroup beginnings (used as $-[$m])
-      # @+ is an array containing subgroup ending (used as $+[$m])
-      # substr gets $line, offset and length (calculated by end minus beginning)
-      my @subgroups;
-      foreach my $m ( 1 .. $#+ ) {
-        push @subgroups, substr($line,$-[$m],$+[$m]-$-[$m])
+
+      # match regexps in %matchers against subgroups
+      # and call the callback function
+      while (my ($key, $cb) = each(%matchers)) {
+        if (my @subgroups = ($line =~ $key)) {
+          $cb->(@subgroups);
+        }
       }
-      $matchers{$key}->(@subgroups);
     }
   }
   print "\n";
