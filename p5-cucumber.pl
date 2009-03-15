@@ -121,7 +121,7 @@ Then qr/s?he was (.*) in (.*)/, sub {
 # THE engine!
 #
 my $last_first_word;
-foreach my $line (@all_lines = split("\n",$story)) {
+foreach my $line (split("\n",$story)) {
 
   print $line, "\n";
   $line = trim($line);
