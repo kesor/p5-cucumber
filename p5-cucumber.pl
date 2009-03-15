@@ -34,26 +34,50 @@ EOF
 # anonymous functions created by Given/When/Then
 my %matchers;
 
+sub execute_match($) {
+  my $line = shift;
+  # match regexps in %matchers against subgroups
+  # and call the callback function
+  foreach my $regexp (keys %matchers) {
+    if (my @subgroups = ($line =~ $regexp)) {
+      $matchers{$regexp}->(@subgroups);
+      last;
+    }
+  }
+}
+
 # creator of matchers, commonly known as StoreMatcher
 # but abbreviated into just 'sm'
 sub sm($&) {
   my ($regexp, $callback) = @_;
   $matchers{$regexp} = $callback;
 }
-sub Given($&) {
-  my ($regexp, $callback) = @_;
-  $regexp = qr{Given $regexp};
-  sm($regexp,\&$callback);
+sub Given($;&) {
+  if (ref($_[0]) eq "Regexp") {
+    my ($regexp, $callback) = @_;
+    $regexp = qr{Given $regexp};
+    sm($regexp,\&$callback);
+  } else {
+    execute_match("Given ".$_[0]);
+  }
 }
-sub When($&) {
-  my ($regexp, $callback) = @_;
-  $regexp = qr{When $regexp};
-  sm($regexp,\&$callback);
+sub When($;&) {
+  if (ref($_[0]) eq "Regexp") {
+    my ($regexp, $callback) = @_;
+    $regexp = qr{When $regexp};
+    sm($regexp,\&$callback);
+  } else {
+    execute_match("When ".$_[0]);
+  }
 }
-sub Then($&) {
-  my ($regexp, $callback) = @_;
-  $regexp = qr{Then $regexp};
-  sm($regexp,\&$callback);
+sub Then($;&) {
+  if (ref($_[0]) eq "Regexp") {
+    my ($regexp, $callback) = @_;
+    $regexp = qr{Then $regexp};
+    sm($regexp,\&$callback);
+  } else {
+    execute_match("Then ".$_[0]);
+  }
 }
 
 #
@@ -77,17 +101,28 @@ When qr/s?he ate (.*)/, sub {
   }
 };
 
+Then qr/was (.*)/, sub {
+  my ($description) = @_;
+  is($state{human},$description,$description);
+};
+
+Then qr/in (.*)/, sub {
+  my ($location) = @_;
+  is($state{location},$location,$location);
+};
+
 Then qr/s?he was (.*) in (.*)/, sub {
   my ($description,$location) = @_;
-  is($state{human},$description,$description);
-  is($state{location},$location,$location);
+  Then "was $description";
+  Then "in $location";
 };
 
 #
 # THE engine!
 #
 my $last_first_word;
-foreach my $line (split("\n",$story)) {
+foreach my $line (@all_lines = split("\n",$story)) {
+
   print $line, "\n";
   $line = trim($line);
 
@@ -101,12 +136,5 @@ foreach my $line (split("\n",$story)) {
     $line =~ s/^And(\W+)/$last_first_word$1/;
   }
 
-  # match regexps in %matchers against subgroups
-  # and call the callback function
-  foreach my $regexp (keys %matchers) {
-    if (my @subgroups = ($line =~ $regexp)) {
-      $matchers{$regexp}->(@subgroups);
-      last;
-    }
-  }
+  execute_match($line);
 }
