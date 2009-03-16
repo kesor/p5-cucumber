@@ -1,9 +1,11 @@
 #!/bin/sh
 
-: ${GRAMMAR:="Parser.yp"}
-: ${OUTPUT:="../lib/parser/Parser.pm"}
+: ${BASEDIR:=`dirname $0`}
+: ${GRAMMAR:="$BASEDIR/Parser.yp"}
+: ${OUTPUT:="$BASEDIR/../lib/parser/Parser.pm"}
 : ${PKGNAME:="Parser"}
 
 echo "Compiling parser grammar (${GRAMMAR} -> ${OUTPUT})"
 
+mkdir -p `dirname $OUTPUT`
 yapp -v -s -m ${PKGNAME} -o ${OUTPUT} ${GRAMMAR}
