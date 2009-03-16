@@ -1,0 +1,77 @@
+%start feature
+
+%{
+my %matchers;
+%}
+
+%%
+
+feature                  : header feature_elements
+                         ;
+
+feature_elements         : scenarios
+                         ;
+
+scenarios                : scenario scenarios
+                         | scenario
+                         ;
+
+scenario                 : scenario_keyword line_to_eol steps
+                         ;
+
+steps                    : step steps
+                         | step
+                         ;
+
+step                     : step_keyword line_to_eol
+{
+   foreach my $regexp (keys %matchers) {
+     if (my @subgroups = ("$_[1] $_[2]" =~ $regexp)) {
+       $matchers{$regexp}->(@subgroups);
+       last;
+     }
+   }
+}
+                         ;
+
+%%
+
+sub Lexer {
+  my ($parser) = shift;
+
+  # check to see if data to be parsed is present
+  $parser->YYData->{INPUT} or return('',undef);
+
+  $parser->YYData->{INPUT} =~ s/^[\s\t]+//s;
+
+  for ($parser->YYData->{INPUT}) {
+    # s/^(Scenario\s+Outline\s*?:)//s and return ('scenario_outline_keyword', $1);
+    # s/^(Background\s*?:)//s         and return ('background_keyword', $1);
+    # s/^(Examples\s*?:)//s           and return ('examples_keyword', $1);
+    s/^Feature:(.+?)Scenario/Scenario/s and return ('header', $1);
+    s/^(Scenario\s*?:)//s               and return ('scenario_keyword', $1);
+    s/^(Given|When|Then|And|But)//s     and return ('step_keyword', $1);
+    s/^([^\n\r]+)//s                    and return ('line_to_eol', $1);
+  }
+}
+
+sub Error {
+  exists $_[0]->YYData->{ERRMSG}
+  and do {
+    print $_[0]->YYData->{ERRMSG};
+    delete $_[0]->YYData->{ERRMSG};
+    return;
+  };
+  print "Syntax error\n";
+  print $_[0]->YYData->{ERRMSG};
+}
+
+sub parse {
+  my ($self, $input, $ref_matchers) = @_;
+  %matchers = %$ref_matchers;
+  $self->YYData->{INPUT} = $input;
+  my $result = $self->YYParse(yylex => \&Lexer, yyerror => \&Error, yydebug => 0x0);
+  return $result;
+}
+
+# vim:syn=perl:

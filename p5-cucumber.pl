@@ -5,11 +5,8 @@ use warnings;
 use strict;
 use Test::More 'no_plan';
 
-# utility func to trim whitespace from beginning/end of strings
-sub trim {
-  my($str) = shift =~ m/^\s*(.+?)\s*$/i;
-  defined $str ? return $str : return '';
-}
+use lib 'lib/parser';
+use Parser;
 
 my $story = <<EOF
 Feature: Dealing with mushrooms
@@ -120,21 +117,6 @@ Then qr/s?he was (.*) in (.*)/, sub {
 #
 # THE engine!
 #
-my $last_first_word;
-foreach my $line (split("\n",$story)) {
+my $parser = new Parser();
+my $result = $parser->parse($story,\%matchers);
 
-  print $line, "\n";
-  $line = trim($line);
-
-  # Handle the case for "And":
-  # first, remember 'Given' or 'When' or 'Then'
-  if ($line =~ /^(Given|When|Then)\W+/) {
-    $last_first_word = $1;
-  }
-  # then later, replace 'And' when it shows up
-  if ($line =~ /^And/) {
-    $line =~ s/^And(\W+)/$last_first_word$1/;
-  }
-
-  execute_match($line);
-}

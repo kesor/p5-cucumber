@@ -1,0 +1,9 @@
+#!/bin/sh
+
+: ${GRAMMAR:="Parser.yp"}
+: ${OUTPUT:="../lib/parser/Parser.pm"}
+: ${PKGNAME:="Parser"}
+
+echo "Compiling parser grammar (${GRAMMAR} -> ${OUTPUT})"
+
+yapp -v -s -m ${PKGNAME} -o ${OUTPUT} ${GRAMMAR}
