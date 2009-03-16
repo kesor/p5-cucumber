@@ -42,16 +42,14 @@ sub Lexer {
   # check to see if data to be parsed is present
   $parser->YYData->{INPUT} or return('',undef);
 
+  # clean leading whitespace
   $parser->YYData->{INPUT} =~ s/^[\s\t]+//s;
 
   for ($parser->YYData->{INPUT}) {
-    # s/^(Scenario\s+Outline\s*?:)//s and return ('scenario_outline_keyword', $1);
-    # s/^(Background\s*?:)//s         and return ('background_keyword', $1);
-    # s/^(Examples\s*?:)//s           and return ('examples_keyword', $1);
-    s/^Feature(.+?)Scenario/Scenario/s and return ('header', $1);
-    s/^(Scenario\s*?:)//s               and return ('scenario_keyword', $1);
-    s/^(Given|When|Then|And|But)//s     and return ('step_keyword', $1);
-    s/^([^\n\r]+)//s                    and return ('line_to_eol', $1);
+    return ('header',           $1) if s/^Feature(.+?)Scenario/Scenario/so;
+    return ('scenario_keyword', $1) if s/^(Scenario\s*?:)//so;
+    return ('step_keyword',     $1) if s/^(Given|When|Then|And|But)//so;
+    return ('line_to_eol',      $1) if s/^([^\n\r]+)//so;
   }
 }
 
@@ -63,7 +61,8 @@ sub Error {
     delete $parser->YYData->{ERRMSG};
     return;
   };
-  print "Syntax error\n";
+  print "Syntax error: expecting \"",$parser->YYExpect,
+        "\" but got \"",$parser->YYCurtok,"\"\n";
   print $parser->YYData->{ERRMSG};
 }
 
