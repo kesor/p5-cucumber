@@ -117,3 +117,8 @@ Great thank you for the perl-il and perl-qa mailing lists
 for helping me with some high level perl concepts that make
 this code so beautiful like it is.
 </p>
+<p>
+Another huge thank you to the people in #perl @freenode.net
+who helped me with sticky dereferencing and scalar/list
+problems.
+</p>
