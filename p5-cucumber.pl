@@ -7,9 +7,6 @@ use lib 'lib';
 use Test::More 'no_plan';
 
 use Parser;
-use AST;
-
-my $tree = AST->new();
 
 my $story = <<EOF
 Feature: Dealing with mushrooms
@@ -121,4 +118,8 @@ Then qr/s?he was (.*) in (.*)/, sub {
 # THE engine!
 #
 my $parser = new Parser();
-my $result = $parser->parse($story,\%matchers);
+my ($result,$tree) = $parser->parse($story);
+
+use Data::Dumper;
+my $feature = ($tree->features())[0];
+print $feature->name();

@@ -1,20 +1,24 @@
 package AST;
+use strict;
 
 use AST::Feature;
 
 sub new {
-	my $class = shift;
 	my $self = {
 		FEATURES => []
 	};
-	bless ($self,$class);
+	bless $self;
 	return $self;
 }
 
 sub add_feature {
 	my ($self,$feature) = @_;
-	my @features = $self->{FEATURES};
-	push @features, $feature;
+	push @{ $self->{FEATURES} }, $feature;
+}
+
+sub features {
+	my $self = shift;
+	return $self->{FEATURES};
 }
 
 1;

@@ -1,19 +1,26 @@
-%start feature
-
 %{
-
 use AST;
 my $tree = AST->new();
 my $feature = AST::Feature->new();
 my $scenario = AST::Scenario->new();
-
 %}
 
 %%
 
-feature                  : header feature_elements
-                         { $feature->set_header($_[1]);
-                           $tree->add_feature($feature); }
+story                    : features
+                         ;
+
+features                 : feature features
+                         | feature
+                         ;
+
+feature                  : feature_keyword line_to_eol header feature_elements
+                         {
+                           $feature->name($_[2]);
+                           $feature->header($_[3]);
+                           $tree->add_feature($feature);
+                           $feature = AST::Feature->new();
+                         }
                          ;
 
 feature_elements         : scenarios
@@ -25,7 +32,7 @@ scenarios                : scenario scenarios
 
 scenario                 : scenario_keyword line_to_eol steps
                          {
-                           $scenario->set_name($_[2]);
+                           $scenario->name($_[2]);
                            $feature->add_scenario($scenario);
                            $scenario = AST::Scenario->new();
                          }
@@ -51,9 +58,12 @@ sub Lexer {
   $parser->YYData->{INPUT} =~ s/^[\s\t]+//s;
 
   for ($parser->YYData->{INPUT}) {
-    return ('header',           $1) if s/^Feature(.+?)Scenario/Scenario/so;
+    return ('feature_keyword',  $1) if s/^(Feature\s*?:)//so;
     return ('scenario_keyword', $1) if s/^(Scenario\s*?:)//so;
     return ('step_keyword',     $1) if s/^(Given|When|Then|And|But)//so;
+    if ('header' eq ($parser->YYExpect())[0]) {
+      return ('header', $1) if s/^(.*?)Scenario/Scenario/so;
+    }
     return ('line_to_eol',      $1) if s/^([^\n\r]+)//so;
   }
 }
@@ -75,7 +85,7 @@ sub parse {
   my ($self, $input) = @_;
   $self->YYData->{INPUT} = $input;
   my $result = $self->YYParse(yylex => \&Lexer, yyerror => \&Error, yydebug => 0x0);
-  return $result;
+  return ($result,$tree);
 }
 
 # vim:syn=perl:

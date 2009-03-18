@@ -1,29 +1,29 @@
 package AST::Scenario;
+use strict;
 
 sub new {
-	my $class = shift;
 	my $self = {
 		NAME  => undef,
 		STEPS => []
 	};
-	bless ($self,$class);
+	bless $self;
 	return $self;
 }
 
-sub set_name {
-  my ($self,$name) = @_;
-  $self->{NAME} = $name;
+sub name {
+	my $self = shift;
+	if (@_) { $self->{NAME} = shift; }
+	return $self->{NAME};
 }
 
 sub add_step {
 	my ($self,$step) = @_;
-	my @steps = $self->{STEPS};
-	push @steps, $step;
+	push @{ $self->{STEPS} }, $step;
 }
 
-sub self {
+sub steps {
 	my $self = shift;
-	return \@scenario;
+	return $self->{STEPS};
 }
 
 1;

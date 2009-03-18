@@ -1,26 +1,38 @@
 package AST::Feature;
+use strict;
 
 use AST::Scenario;
 
 sub new {
-	my $class = shift;
 	my $self = {
+		NAME      => undef,
 		HEADER    => undef,
 		SCENARIOS => []
 	};
-	bless ($self,$class);
+	bless $self;
 	return $self;
 }
 
-sub set_header {
+sub name {
+	my $self = shift;
+	if (@_) { $self->{NAME} = shift; }
+	return $self->{NAME};
+}
+
+sub header {
 	my ($self,$header) = @_;
-	$self->{HEADER} = $header;
+	if (@_) { $self->{HEADER} = shift; }
+	return $self->{HEADER};
 }
 
 sub add_scenario {
 	my ($self,$scenario) = @_;
-	my @scenarios = $self->{SCENARIOS};
-	push @scenarios, $scenario;
+	push @{ $self->{SCENARIOS} }, $scenario;
+}
+
+sub scenarios {
+	my $self = shift;
+	return $self->{SCENARIOS};
 }
 
 1;
