@@ -32,7 +32,7 @@ sub add_scenario {
 
 sub scenarios {
 	my $self = shift;
-	return $self->{SCENARIOS};
+	return @{ $self->{SCENARIOS} };
 }
 
 1;

@@ -23,7 +23,7 @@ sub add_step {
 
 sub steps {
 	my $self = shift;
-	return $self->{STEPS};
+	return @{ $self->{STEPS} };
 }
 
 1;

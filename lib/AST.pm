@@ -18,7 +18,7 @@ sub add_feature {
 
 sub features {
 	my $self = shift;
-	return $self->{FEATURES};
+	return @{ $self->{FEATURES} };
 }
 
 1;
