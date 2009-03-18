@@ -120,6 +120,13 @@ Then qr/s?he was (.*) in (.*)/, sub {
 my $parser = new Parser();
 my ($result,$tree) = $parser->parse($story);
 
-use Data::Dumper;
-my $feature = ($tree->features())[0];
-print $feature->name();
+for my $feature ($tree->features) {
+	print "Feature ",$feature->name,"\n";
+	for my $scenario ($feature->scenarios) {
+		print "  Scenario ",$scenario->name,"\n";
+		for my $step ($scenario->steps) {
+			print "    $step\n";
+			print execute_match(qr/$step/);
+		}
+	}
+}
