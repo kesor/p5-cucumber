@@ -20,8 +20,11 @@ sub name {
 }
 
 sub header {
-	my ($self,$header) = @_;
-	if (@_) { $self->{HEADER} = shift; }
+	my $self = shift;
+	if (@_) {
+		$self->{HEADER} = shift;
+		$self->{HEADER} =~ s/^[\s\t]*/  /gsm;
+	}
 	return $self->{HEADER};
 }
 
