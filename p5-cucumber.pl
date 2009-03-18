@@ -3,10 +3,13 @@
 =cut
 use warnings;
 use strict;
+use lib 'lib';
 use Test::More 'no_plan';
 
-use lib 'lib/parser';
 use Parser;
+use AST;
+
+my $tree = AST->new();
 
 my $story = <<EOF
 Feature: Dealing with mushrooms
@@ -16,6 +19,7 @@ Feature: Dealing with mushrooms
 
   Scenario: Mushrooms are bad for you, they kill boys
     Given a live boy in a forest
+    And his loyal dog
     When he ate a mushroom
     Then he was a dead boy in a forest
 
@@ -23,7 +27,6 @@ Feature: Dealing with mushrooms
     Given a live girl in a forest
     When she ate a mushroom
     Then she was a dead girl in a forest
-
 EOF
 ;
 
@@ -119,4 +122,3 @@ Then qr/s?he was (.*) in (.*)/, sub {
 #
 my $parser = new Parser();
 my $result = $parser->parse($story,\%matchers);
-

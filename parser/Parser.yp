@@ -1,12 +1,19 @@
 %start feature
 
 %{
-my %matchers;
+
+use AST;
+my $tree = AST->new();
+my $feature = AST::Feature->new();
+my $scenario = AST::Scenario->new();
+
 %}
 
 %%
 
 feature                  : header feature_elements
+                         { $feature->set_header($_[1]);
+                           $tree->add_feature($feature); }
                          ;
 
 feature_elements         : scenarios
@@ -17,6 +24,11 @@ scenarios                : scenario scenarios
                          ;
 
 scenario                 : scenario_keyword line_to_eol steps
+                         {
+                           $scenario->set_name($_[2]);
+                           $feature->add_scenario($scenario);
+                           $scenario = AST::Scenario->new();
+                         }
                          ;
 
 steps                    : step steps
@@ -24,14 +36,7 @@ steps                    : step steps
                          ;
 
 step                     : step_keyword line_to_eol
-{
-   foreach my $regexp (keys %matchers) {
-     if (my @subgroups = ("$_[1] $_[2]" =~ $regexp)) {
-       $matchers{$regexp}->(@subgroups);
-       last;
-     }
-   }
-}
+                         { $scenario->add_step("$_[1] $_[2]") }
                          ;
 
 %%
@@ -67,8 +72,7 @@ sub Error {
 }
 
 sub parse {
-  my ($self, $input, $ref_matchers) = @_;
-  %matchers = %$ref_matchers;
+  my ($self, $input) = @_;
   $self->YYData->{INPUT} = $input;
   my $result = $self->YYParse(yylex => \&Lexer, yyerror => \&Error, yydebug => 0x0);
   return $result;
