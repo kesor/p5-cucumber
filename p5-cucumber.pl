@@ -14,6 +14,7 @@ Feature: Dealing with mushrooms
   As an evil scientist
   I want to test effects of eating mushrooms on little children
 
+  \@fufu \@version-4.15
   Scenario: Mushrooms are bad for you, they kill boys
     Given a live boy in a forest
     And his loyal dog
@@ -125,10 +126,11 @@ for my $feature ($tree->features) {
 	print $feature->header;
 	for my $scenario ($feature->scenarios) {
 		print "\n";
+		print "  Tags: ",join(',',$scenario->tags),"\n";
 		print "  Scenario: ",$scenario->name,"\n";
 		for my $step ($scenario->steps) {
 			print "    $step\n";
-			print execute_match($step);
+			execute_match($step);
 		}
 	}
 }

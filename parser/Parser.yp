@@ -30,12 +30,21 @@ scenarios                : scenario scenarios
                          | scenario
                          ;
 
-scenario                 : scenario_keyword line_to_eol steps
+scenario                 : tags scenario_keyword line_to_eol steps
+                         | scenario_keyword line_to_eol steps
                          {
                            $scenario->name($_[2]);
                            $feature->add_scenario($scenario);
                            $scenario = AST::Scenario->new();
                          }
+                         ;
+
+tags                     : tag tags
+                         | tag
+                         ;
+
+tag                      : tag_keyword
+                         { $scenario->add_tag($_[1]); }
                          ;
 
 steps                    : step steps
@@ -58,11 +67,12 @@ sub Lexer {
   $parser->YYData->{INPUT} =~ s/^[\s\t]+//s;
 
   for ($parser->YYData->{INPUT}) {
+    return ('tag_keyword',      $1) if s/^@([^\s\t]+)//so; 
     return ('feature_keyword',  $1) if s/^(Feature\s*?:)//so;
     return ('scenario_keyword', $1) if s/^(Scenario\s*?:)//so;
     return ('step_keyword',     $1) if s/^(Given|When|Then|And|But)//so;
     if ('header' eq ($parser->YYExpect())[0]) {
-      return ('header', $1) if s/^(.*?)Scenario/Scenario/so;
+      return ('header', $1) if s/^(.*?)(Scenario|@)/$2/so;
     }
     return ('line_to_eol',      $1) if s/^([^\n\r]+)//so;
   }
