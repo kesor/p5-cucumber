@@ -10,7 +10,7 @@ sub new {
 
 sub push {
 	my $self = shift;
-	push @{ $self->{STACK} }, shift;
+	CORE::push @{ $self->{STACK} }, shift;
 }
 
 sub send {

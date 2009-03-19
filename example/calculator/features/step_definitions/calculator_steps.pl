@@ -3,11 +3,7 @@ use warnings;
 use strict;
 use Test::More 'no_plan';
 
-use lib './../../../../lib';
-use Cucumber::Steps;
-
 # require the actual working calculator code
-use lib './../../lib';
 use Calculator;
 
 # hash to store state
@@ -36,3 +32,6 @@ Then(qr/the result should be (.*) on the sceeen/, sub {
 	is($s{result}, $result);
 });
 
+print "Done calculator_steps.pl\n";
+
+1;

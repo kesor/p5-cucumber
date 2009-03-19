@@ -14,7 +14,7 @@ features                 : feature features
                          | feature
                          ;
 
-feature                  : feature_keyword line_to_eol header feature_elements
+feature                  : feature_keyword line_to_eol eol header scenarios
                          {
                            $feature->name($_[2]);
                            $feature->header($_[3]);
@@ -23,15 +23,38 @@ feature                  : feature_keyword line_to_eol header feature_elements
                          }
                          ;
 
-feature_elements         : scenarios
-                         ;
-
-scenarios                : scenario scenarios
+scenarios                : scenario_outline scenarios
+                         | scenario scenarios
+                         | scenario_outline
                          | scenario
                          ;
 
-scenario                 : tags scenario_keyword line_to_eol steps
-                         | scenario_keyword line_to_eol steps
+scenario_outline         : tags scenario_outline_keyword line_to_eol eol steps examples
+                         | scenario_outline_keyword line_to_eol eol steps examples
+                         {
+                           $scenario->name($_[2]);
+                           $feature->add_scenario($scenario);
+                           $scenario = AST::Scenario->new();
+                         }
+                         ;
+
+examples                 : examples_keyword eol table
+                         ;
+
+table                    : table_header table_data
+                         ;
+
+table_header             : '|' table_cell table_header
+                         | '|' table_cell '|' eol
+                         ;
+
+table_data               : '|' table_cell table_data
+                         | '|' table_cell '|' eol table_data
+                         | '|' table_cell '|' eol
+                         ;
+
+scenario                 : tags scenario_keyword line_to_eol eol steps
+                         | scenario_keyword line_to_eol eol steps
                          {
                            $scenario->name($_[2]);
                            $feature->add_scenario($scenario);
@@ -40,7 +63,7 @@ scenario                 : tags scenario_keyword line_to_eol steps
                          ;
 
 tags                     : tag tags
-                         | tag
+                         | tag eol
                          ;
 
 tag                      : tag_keyword
@@ -51,7 +74,7 @@ steps                    : step steps
                          | step
                          ;
 
-step                     : step_keyword line_to_eol
+step                     : step_keyword line_to_eol eol
                          { $scenario->add_step("$_[1] $_[2]") }
                          ;
 
@@ -64,15 +87,30 @@ sub Lexer {
   $parser->YYData->{INPUT} or return('',undef);
 
   # clean leading whitespace
-  $parser->YYData->{INPUT} =~ s/^[\s\t]+//s;
+  $parser->YYData->{INPUT} =~ s/^[ \t]+//s;
+
+# debugging
+#  my $gotstring = $parser->YYData->{INPUT};
+#  $gotstring =~ s/^(.{25}).*$/$1/s;
+#  $gotstring =~ s/[\n\r]+/<NL>/sg;
+#  print "Expecting: ",($parser->YYExpect())[0],"\n";
+#  print "      Got: ",$gotstring,"\n";
 
   for ($parser->YYData->{INPUT}) {
+    return ('|',             undef) if s/^\|//so;
+    return ('eol',           undef) if s/^([ \t]*[\n\r]+[ \t]*)+//so; 
+
     return ('tag_keyword',      $1) if s/^@([^\s\t]+)//so; 
     return ('feature_keyword',  $1) if s/^(Feature\s*?:)//so;
+    return ('scenario_outline_keyword', $1) if s/^(Scenario Outline\s*?:)//so;
     return ('scenario_keyword', $1) if s/^(Scenario\s*?:)//so;
+    return ('examples_keyword', $1) if s/^(Examples\s*?:)//so;
     return ('step_keyword',     $1) if s/^(Given|When|Then|And|But)//so;
     if ('header' eq ($parser->YYExpect())[0]) {
       return ('header', $1) if s/^(.*?)(Scenario|@)/$2/so;
+    }
+    if ('table_cell' eq ($parser->YYExpect())[0]) {
+	    return ('table_cell', $1) if s/^(.+?)\|/\|/so;
     }
     return ('line_to_eol',      $1) if s/^([^\n\r]+)//so;
   }
@@ -88,7 +126,7 @@ sub Error {
   };
   print "Syntax error: expecting \"",$parser->YYExpect,
         "\" but got \"",$parser->YYCurtok,"\"\n";
-  print $parser->YYData->{ERRMSG};
+  print $parser->YYData->{ERRMSG} if $parser->YYData->{ERRMSG};
 }
 
 sub parse {
