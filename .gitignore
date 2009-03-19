@@ -1,0 +1,6 @@
+.includepath
+.project
+.settings
+*.launch
+parser/*.output
+lib/Parser.pm
