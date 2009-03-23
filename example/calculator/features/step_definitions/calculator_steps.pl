@@ -2,6 +2,7 @@
 use warnings;
 use strict;
 use Test::More 'no_plan';
+use Cucumber;
 
 # require the actual working calculator code
 use Calculator;

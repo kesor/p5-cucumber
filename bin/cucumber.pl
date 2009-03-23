@@ -4,14 +4,7 @@ use strict;
 use FindBin qw($RealDir);
 use lib "$RealDir/../lib";
 
-use Cucumber;
+use Cucumber::Engine;
 
-use Getopt::Std;
-$Getopt::Std::STANDARD_HELP_VERSION = 1;
-
-# hash for command line options
-my %opts;
-
-getopt('', \%opts);
-
-run_features($ARGV[0]);
+my $engine = Cucumber::Engine->new();
+$engine->run_features($ARGV[0]);

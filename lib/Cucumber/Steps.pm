@@ -1,5 +1,21 @@
 package Steps;
 
+# empty hash to hold match strings/regexp and
+# anonymous functions created by Given/When/Then
+my %matchers;
+
+sub execute_match($) {
+  my $line = shift;
+  # match regexps in %matchers against subgroups
+  # and call the callback function
+  foreach my $regexp (keys %matchers) {
+    if (my @subgroups = ($line =~ $regexp)) {
+      $matchers{$regexp}->(@subgroups);
+      last;
+    }
+  }
+}
+
 sub Before(&) {
 	my $callback = shift;
 	$callback->();
