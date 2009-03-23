@@ -2,7 +2,7 @@
 use warnings;
 use strict;
 use FindBin qw($RealDir);
-use lib '$RealDir/../lib';
+use lib "$RealDir/../lib";
 
 use Cucumber;
 
