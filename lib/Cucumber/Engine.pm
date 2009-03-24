@@ -1,7 +1,7 @@
 package Cucumber::Engine;
-use diagnostics;
-use warnings;
-use strict;
+#use diagnostics;
+#use warnings;
+#use strict;
 
 use DirHandle;
 use File::Slurp qw/slurp/;
@@ -16,14 +16,14 @@ sub run_features {
 	
 	my $features_dir = $stories_dir."/features";
 	my $features_lib = $stories_dir."/lib";
-	my $steps_dir    = $features_dir."/step_definitions";
+	our $steps_dir    = $features_dir."/step_definitions";
 
 	# hash to be preloaded with steps
 	my %matchers;
 
 	# load the matchers hash with steps that run features
 	for my $steps_file (grep { /_steps.pl$/i } DirHandle->new($steps_dir)->read()) {
-		do "$steps_dir/$steps_file";
+		require "$steps_dir/$steps_file";
 	}
 	
 	# parse the text files with feature specs
@@ -33,6 +33,9 @@ sub run_features {
 		$tree->execute(\%matchers);
 	}
 
+	print "run features did something.\n";
+	use Data::Dumper;
+	print Dumper(%matchers),"\n";
 }
 
 1;

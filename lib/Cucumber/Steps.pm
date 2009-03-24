@@ -1,7 +1,11 @@
-package Steps;
-use diagnostics;
-use warnings;
-use strict;
+package Cucumber::Steps;
+#use diagnostics;
+#use warnings;
+#use strict;
+
+require Exporter;
+@ISA = qw(Exporter);
+@EXPORT = qw(Before After Given When Then);
 
 sub Before(&) {
 	my $callback = shift;
