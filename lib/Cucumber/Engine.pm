@@ -28,7 +28,7 @@ sub run_features {
 
 	# parse the text files with feature specs
 	for my $feature_file (grep { /.feature$/i } DirHandle->new($features_dir)->read()) {
-		my ($result,$tree) = Parser()->new()->parse( scalar(slurp("$features_dir/$feature_file")) );
+		my ($result,$tree) = Parser->new()->parse( scalar(slurp("$features_dir/$feature_file")) );
 		# execute feature file
 		$tree->execute(\%matchers);
 	}
