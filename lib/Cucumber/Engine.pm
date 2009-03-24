@@ -32,10 +32,6 @@ sub run_features {
 		# execute feature file
 		$tree->execute(\%matchers);
 	}
-
-	print "run features did something.\n";
-	use Data::Dumper;
-	print Dumper(%matchers),"\n";
 }
 
 1;
