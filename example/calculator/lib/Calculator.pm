@@ -1,4 +1,7 @@
 package Calculator;
+use diagnostics;
+use warnings;
+use strict;
 
 sub new {
 	my $self = {

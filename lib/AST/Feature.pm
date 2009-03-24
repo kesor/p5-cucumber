@@ -1,4 +1,6 @@
 package AST::Feature;
+use diagnostics;
+use warnings;
 use strict;
 
 use AST::Scenario;
@@ -21,7 +23,7 @@ sub name {
 
 sub header {
 	my $self = shift;
-	if (@_) {
+	if ($_[0]) {
 		$self->{HEADER} = shift;
 		$self->{HEADER} =~ s/^[\s\t]*/  /gsm;
 	}

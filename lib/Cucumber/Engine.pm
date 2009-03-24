@@ -1,5 +1,5 @@
 package Cucumber::Engine;
-
+use diagnostics;
 use warnings;
 use strict;
 
@@ -23,9 +23,9 @@ sub run_features {
 
 	# load the matchers hash with steps that run features
 	for my $steps_file (grep { /_steps.pl$/i } DirHandle->new($steps_dir)->read()) {
-		do $steps_file;
+		do "$steps_dir/$steps_file";
 	}
-
+	
 	# parse the text files with feature specs
 	for my $feature_file (grep { /.feature$/i } DirHandle->new($features_dir)->read()) {
 		my ($result,$tree) = Parser->new()->parse( scalar(slurp("$features_dir/$feature_file")) );

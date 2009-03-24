@@ -1,6 +1,8 @@
 #!/usr/bin/env perl
+use diagnostics;
 use warnings;
 use strict;
+
 use FindBin qw($RealDir);
 use lib "$RealDir/../lib";
 

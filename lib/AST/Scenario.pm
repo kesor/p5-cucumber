@@ -1,4 +1,6 @@
 package AST::Scenario;
+use diagnostics;
+use warnings;
 use strict;
 
 sub new {

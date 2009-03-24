@@ -1,8 +1,7 @@
 package Steps;
-
-# empty hash to hold match strings/regexp and
-# anonymous functions created by Given/When/Then
-my %matchers;
+use diagnostics;
+use warnings;
+use strict;
 
 sub Before(&) {
 	my $callback = shift;

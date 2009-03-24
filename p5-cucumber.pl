@@ -1,8 +1,10 @@
 #!/usr/bin/env perl
 =head1 Example of Perl Cucumber
 =cut
+use diagnostics;
 use warnings;
 use strict;
+
 use lib 'lib';
 use Test::More 'no_plan';
 

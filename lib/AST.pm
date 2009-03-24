@@ -1,4 +1,6 @@
 package AST;
+use diagnostics;
+use warnings;
 use strict;
 
 use AST::Feature;
