@@ -6,5 +6,4 @@ use lib "$RealDir/../lib";
 
 use Cucumber::Engine;
 
-my $engine = Cucumber::Engine->new();
-$engine->run_features($ARGV[0]);
+Cucumber::Engine->run_features($ARGV[0]);

@@ -37,4 +37,15 @@ sub tags {
 	return @{ $self->{TAGS} };
 }
 
+sub execute {
+	my $self = shift;
+	my $matchers = shift; # reference to a hash of matchers
+	for my $step ($self->steps()) {
+		for my $regexp (keys %$matchers) {
+			if (my @subgroups = ($step =~ $regexp)) {
+				$matchers->{$regexp}->(@subgroups);
+			}
+		}
+	}
+}
 1;

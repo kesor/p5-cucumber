@@ -8,12 +8,6 @@ use File::Slurp qw/slurp/;
 
 use Parser;
 
-sub new {
-	my $self = {};
-	bless $self;
-	return $self;
-}
-
 sub run_features {
 	my $self = shift;
 
@@ -24,12 +18,17 @@ sub run_features {
 	my $features_lib = $stories_dir."/lib";
 	my $steps_dir    = $features_dir."/step_definitions";
 
+	# hash to be preloaded with steps
+	my %matchers;
+
+	# load the matchers hash with steps that run features
 	my $steps_dh = DirHandle->new($steps_dir);
 	my @step_files = grep { /_steps.pl$/i } $steps_dh->read();
 	for my $steps_file (@step_files) {
 		do $steps_file;
 	}
-	
+
+	# parse the text files with feature specs
 	my ($result,$tree);
 	my $dh = DirHandle->new($features_dir);
 	my @files = grep { /.feature$/i } $dh->read();
@@ -38,19 +37,8 @@ sub run_features {
 		($result,$tree) = $parser->parse( scalar(slurp("$features_dir/$feature_file")) );
 	}
 
-	for my $feature ($tree->features) {
-		print "\nFeature: ",$feature->name,"\n";
-		print $feature->header;
-		for my $scenario ($feature->scenarios) {
-			print "\n";
-			print "  Scenario: ",$scenario->name,"\n";
-			for my $step ($scenario->steps) {
-				print "    $step\n";
-				# execute_match($step);
-			}
-		}
-	}
-
+	# execute the features
+	$tree->execute(\%matchers);
 }
 
 1;

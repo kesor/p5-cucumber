@@ -38,4 +38,12 @@ sub scenarios {
 	return @{ $self->{SCENARIOS} };
 }
 
+sub execute {
+	my $self = shift;
+	my $matchers = shift; # reference to a hash of matchers
+	for my $scenario ($self->scenarios()) {
+		$scenario->execute($matchers);
+	}
+}
+
 1;

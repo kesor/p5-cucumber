@@ -21,4 +21,12 @@ sub features {
 	return @{ $self->{FEATURES} };
 }
 
+sub execute {
+	my $self = shift;
+	my $matchers = shift; # reference to a hash of matchers
+	for my $feature ($self->features()) {
+		$feature->execute($matchers);
+	}
+}
+
 1;
