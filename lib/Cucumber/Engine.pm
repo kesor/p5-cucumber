@@ -22,23 +22,17 @@ sub run_features {
 	my %matchers;
 
 	# load the matchers hash with steps that run features
-	my $steps_dh = DirHandle->new($steps_dir);
-	my @step_files = grep { /_steps.pl$/i } $steps_dh->read();
-	for my $steps_file (@step_files) {
+	for my $steps_file (grep { /_steps.pl$/i } DirHandle->new($steps_dir)->read()) {
 		do $steps_file;
 	}
 
 	# parse the text files with feature specs
-	my ($result,$tree);
-	my $dh = DirHandle->new($features_dir);
-	my @files = grep { /.feature$/i } $dh->read();
-	for my $feature_file (@files) {
-		my $parser = new Parser();
-		($result,$tree) = $parser->parse( scalar(slurp("$features_dir/$feature_file")) );
+	for my $feature_file (grep { /.feature$/i } DirHandle->new($features_dir)->read()) {
+		my ($result,$tree) = Parser()->new()->parse( scalar(slurp("$features_dir/$feature_file")) );
+		# execute feature file
+		$tree->execute(\%matchers);
 	}
 
-	# execute the features
-	$tree->execute(\%matchers);
 }
 
 1;
