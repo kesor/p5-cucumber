@@ -1,12 +1,12 @@
 package Cucumber::Engine;
-#use diagnostics;
-#use warnings;
-#use strict;
+use diagnostics;
+use warnings;
+use strict;
 
 use DirHandle;
 use File::Slurp qw/slurp/;
 
-use Parser;
+use Cucumber::Parser;
 
 sub run_features {
 	my $self = shift;
@@ -19,16 +19,15 @@ sub run_features {
 	our $steps_dir    = $features_dir."/step_definitions";
 
 	# hash to be preloaded with steps
-	my %matchers;
+	our %matchers;
 
 	# load the matchers hash with steps that run features
-	for my $steps_file (grep { /_steps.pl$/i } DirHandle->new($steps_dir)->read()) {
-		require "$steps_dir/$steps_file";
-	}
+	# hardcoded to be "steps.pl" as the initial loader file
+	require "$steps_dir/steps.pl";
 	
 	# parse the text files with feature specs
 	for my $feature_file (grep { /.feature$/i } DirHandle->new($features_dir)->read()) {
-		my ($result,$tree) = Parser->new()->parse( scalar(slurp("$features_dir/$feature_file")) );
+		my ($result,$tree) = Cucumber::Parser->new()->parse( scalar(slurp("$features_dir/$feature_file")) );
 		# execute feature file
 		$tree->execute(\%matchers);
 	}

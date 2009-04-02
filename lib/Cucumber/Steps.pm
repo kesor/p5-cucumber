@@ -1,27 +1,27 @@
 package Cucumber::Steps;
-#use diagnostics;
-#use warnings;
-#use strict;
+use diagnostics;
+use warnings;
+use strict;
 
 require Exporter;
-@ISA = qw(Exporter);
-@EXPORT = qw(Before After Given When Then);
-
-sub Before(&) {
-	my $callback = shift;
-	$callback->();
-}
-
-sub After(&) {
-	my $callback = shift;
-	$callback->();
-}
+our @ISA = qw(Exporter);
+our @EXPORT = qw(Before After Given When Then);
 
 # creator of matchers, commonly known as StoreMatcher
 # but abbreviated into just 'sm'
 sub sm($&) {
   my ($regexp, $callback) = @_;
-  $matchers{$regexp} = $callback;
+  # $matchers{$regexp} = $callback;
+}
+
+sub Before(&) {
+	my $callback = shift;
+	sm("Before",\&$callback);
+}
+
+sub After(&) {
+	my $callback = shift;
+	sm("After",\&$callback);
 }
 
 sub Given($;&) {
