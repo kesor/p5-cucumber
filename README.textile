@@ -126,6 +126,7 @@ ok 4 - a forest
 (exitcode is 0 for success)
 
 h3. A story for this project
+
 <pre>
 Feature: Automating acceptance tests
   As a software quality insurance person
