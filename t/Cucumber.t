@@ -12,4 +12,12 @@ sub startup : Test(startup => 2) {
       can_ok('Cucumber','new');
 }
 
+sub setup : Test(setup) {
+      shift->{c} = Cucumber->new;
+}
+
+sub teardown : Test(teardown) {
+      shift->{c} = undef;
+}
+
 
