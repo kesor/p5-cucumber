@@ -1,4 +1,3 @@
-
 h1. Perl 5 Cucumber
 
 This is a minimal implementation of Cucumber in Perl5
@@ -6,6 +5,22 @@ This is a minimal implementation of Cucumber in Perl5
 To learn about Cucumber take a look at:
 <a href="http://wiki.github.com/aslakhellesoy/cucumber/">http://wiki.gihub.com/aslakhellesoy/cucumber</a>
 
+In a nutshell, it enables to run an external DSL called Gherkin to automate acceptance testing.
+And the DSL looks like this:
+<pre>
+Feature:
+  As a [role]
+  I want to [operation]
+  So that [business value]
+
+  Scenario:
+    Given [known state]
+    And [more state]
+    When I [action]
+    And [more actions]
+    Then [expected outcome]
+    And [more outcomes]
+</pre>
 
 h2. Example:
 
@@ -109,6 +124,23 @@ ok 4 - a forest
 1..4
 </pre>
 (exitcode is 0 for success)
+
+h3. A story for this project
+<pre>
+Feature: Automating acceptance tests
+  As a software quality insurance person
+  I want to automate acceptance testing
+  So that I free my time to do other things
+
+  Scenario: Using cucumber to automate acceptance tests
+    Given a story written in gherkin
+    And steps written for it in perl
+    When I use the cucumber module
+    And give it my gherkin stories
+    And give it my perl steps
+    Then the stories are executed
+    And I can see the result
+</pre>
 
 h3. Thanks
 
